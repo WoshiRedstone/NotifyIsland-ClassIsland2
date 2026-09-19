@@ -1,0 +1,21 @@
+<controls:ComponentBase x:TypeArguments="models:HttpTextComponentSettings"
+                        x:Class="cn.lixiaotuan.notifyisland.Controls.HttpTextComponent"
+                        xmlns="https://github.com/avaloniaui"
+                        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                        xmlns:local="clr-namespace:cn.lixiaotuan.notifyisland.Controls"
+                        xmlns:controls="clr-namespace:ClassIsland.Core.Abstractions.Controls;assembly=ClassIsland.Core"
+                        xmlns:models="clr-namespace:cn.lixiaotuan.notifyisland.Models"
+                        mc:Ignorable="d"
+                        d:DesignHeight="60" d:DesignWidth="320">
+    <Panel VerticalAlignment="Center"
+           DataContext="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=local:HttpTextComponent}}">
+        <TextBlock x:Name="MainTextBlock"
+                   Text="{Binding Settings.Text}"
+                   FontSize="{Binding Settings.FontSize}"
+                   TextWrapping="Wrap"
+                   TextTrimming="CharacterEllipsis"
+                   VerticalAlignment="Center"/>
+    </Panel>
+</controls:ComponentBase>

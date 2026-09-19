@@ -1,0 +1,37 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<!-- ClassIsland 2.x 基于 Avalonia，插件目标框架为 net8.0 -->
+		<TargetFramework>net8.0</TargetFramework>
+		<Nullable>enable</Nullable>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<EnableDynamicLoading>True</EnableDynamicLoading>
+		<RootNamespace>cn.lixiaotuan.notifyisland</RootNamespace>
+		<AssemblyName>cn.lixiaotuan.notifyisland</AssemblyName>
+	</PropertyGroup>
+
+	<PropertyGroup>
+		<!-- ClassIsland 2.0 插件 SDK（apiVersion 2.0.0.0） -->
+		<ClassIslandPluginSdkVersion>2.0.4</ClassIslandPluginSdkVersion>
+		<!-- 设为 true 可在生成后自动打包 .cipx 插件包 -->
+		<CreateCipx>false</CreateCipx>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="ClassIsland.PluginSdk" Version="$(ClassIslandPluginSdkVersion)">
+			<ExcludeAssets>runtime; native</ExcludeAssets>
+		</PackageReference>
+	</ItemGroup>
+
+	<ItemGroup>
+		<None Update="icon.png">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</None>
+		<None Update="manifest.yml">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</None>
+		<None Update="README.md">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</None>
+	</ItemGroup>
+</Project>

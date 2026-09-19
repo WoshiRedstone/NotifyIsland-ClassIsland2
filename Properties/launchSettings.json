@@ -1,0 +1,16 @@
+{
+    "profiles": {
+        "ClassIsland 插件": {
+            "commandName": "Executable",
+            "executablePath": "C:\\Users\\Shuai\\OneDrive\\文档\\ClassIsland\\ClassIsland.Desktop\\bin\\Debug\\net8.0-windows10.0.19041.0\\ClassIsland.Desktop.exe",
+            "commandLineArgs": "-epp $(TargetDir)",
+            "workingDirectory": "C:\\Users\\Shuai\\OneDrive\\文档\\ClassIsland\\ClassIsland.Desktop\\bin\\Debug\\net8.0-windows10.0.19041.0"
+        },
+        "ClassIsland 插件（进入设置）": {
+            "commandName": "Executable",
+            "executablePath": "C:\\Users\\Shuai\\OneDrive\\文档\\ClassIsland\\ClassIsland.Desktop\\bin\\Debug\\net8.0-windows10.0.19041.0\\ClassIsland.Desktop.exe",
+            "commandLineArgs": "-epp $(TargetDir) --uri classisland://app/settings",
+            "workingDirectory": "C:\\Users\\Shuai\\OneDrive\\文档\\ClassIsland\\ClassIsland.Desktop\\bin\\Debug\\net8.0-windows10.0.19041.0"
+        }
+    }
+}

@@ -1,0 +1,96 @@
+<ci:SettingsPageBase x:Class="cn.lixiaotuan.notifyisland.Views.NotifyIslandSettingsPage"
+      xmlns="https://github.com/avaloniaui"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+      xmlns:ci="http://classisland.tech/schemas/xaml/core"
+      xmlns:fluent="clr-namespace:FluentAvalonia.UI.Controls;assembly=FluentAvalonia"
+      xmlns:local="clr-namespace:cn.lixiaotuan.notifyisland.Views"
+      mc:Ignorable="d"
+      d:DesignHeight="600" d:DesignWidth="800">
+    <ScrollViewer>
+        <StackPanel MaxWidth="750" Spacing="6"
+                    DataContext="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=local:NotifyIslandSettingsPage}}">
+
+            <fluent:SettingsExpander IconSource="{ci:FluentIconSource &#xEF1D;}"
+                                     Header="启用 NotifyIsland 服务"
+                                     Description="启用后将在下方地址启动 HTTP 服务，同时提供提醒接口与文本组件接口。"
+                                     IsExpanded="True">
+                <fluent:SettingsExpander.Footer>
+                    <ToggleSwitch IsChecked="{Binding Settings.Enabled, Mode=TwoWay}"/>
+                </fluent:SettingsExpander.Footer>
+
+                <StackPanel Spacing="6" Margin="0,4,0,8">
+                    <fluent:SettingsExpander IconSource="{ci:FluentIconSource &#xE905;}"
+                                             Header="监听地址"
+                                             Description="设置 API 服务监听的主机。使用 localhost 无需管理员权限；使用 * 或 + 表示监听所有网卡，需要管理员权限。">
+                        <fluent:SettingsExpander.Footer>
+                            <TextBox MinWidth="180"
+                                     Watermark="localhost / * / +"
+                                     Text="{Binding Settings.Host, UpdateSourceTrigger=PropertyChanged}"/>
+                        </fluent:SettingsExpander.Footer>
+                    </fluent:SettingsExpander>
+
+                    <fluent:SettingsExpander IconSource="{ci:FluentIconSource &#xE1A0;}"
+                                             Header="监听端口"
+                                             Description="设置 API 服务监听的端口号（1~65535）。">
+                        <fluent:SettingsExpander.Footer>
+                            <NumericUpDown MinWidth="180"
+                                           Minimum="1" Maximum="65535" Increment="1"
+                                           Value="{Binding Settings.Port, Mode=TwoWay}"/>
+                        </fluent:SettingsExpander.Footer>
+                    </fluent:SettingsExpander>
+
+                    <fluent:SettingsExpander IconSource="{ci:FluentIconSource &#xEA01;}"
+                                             Header="API 密钥"
+                                             Description="提醒接口 /api/notify 使用的 Bearer 密钥，留空表示不校验。">
+                        <fluent:SettingsExpander.Footer>
+                            <TextBox MinWidth="180"
+                                     Watermark="留空表示不校验"
+                                     Text="{Binding Settings.Token, UpdateSourceTrigger=PropertyChanged}"/>
+                        </fluent:SettingsExpander.Footer>
+                    </fluent:SettingsExpander>
+
+                    <fluent:SettingsExpander IconSource="{ci:FluentIconSource &#xEAF0;}"
+                                             Header="文本接口也要求密钥"
+                                             Description="开启后，更新文本组件的接口也需要携带与 API 密钥一致的 Bearer 令牌。默认关闭，以保持与 PutIsland 用法一致。">
+                        <fluent:SettingsExpander.Footer>
+                            <ToggleSwitch IsChecked="{Binding Settings.TextApiRequireToken, Mode=TwoWay}"/>
+                        </fluent:SettingsExpander.Footer>
+                    </fluent:SettingsExpander>
+                </StackPanel>
+            </fluent:SettingsExpander>
+
+            <fluent:SettingsExpander IconSource="{ci:FluentIconSource &#xE9E4;}"
+                                     Header="服务状态"
+                                     Description="当前 HTTP 服务的运行状态。"
+                                     IsExpanded="True">
+                <StackPanel Spacing="6" Margin="0,4,0,8">
+                    <fluent:SettingsExpander IconSource="{ci:FluentIconSource &#xE561;}"
+                                             Header="提醒接口"
+                                             Description="{Binding Status.NotificationApiStatus}"/>
+                    <fluent:SettingsExpander IconSource="{ci:FluentIconSource &#xF26F;}"
+                                             Header="文本组件接口"
+                                             Description="{Binding Status.TextApiStatus}"/>
+                    <fluent:SettingsExpander IconSource="{ci:FluentIconSource &#xE84F;}"
+                                             Header="最近错误"
+                                             Description="{Binding Status.LastError}"/>
+                </StackPanel>
+            </fluent:SettingsExpander>
+
+            <fluent:SettingsExpander IconSource="{ci:FluentIconSource &#xEDC7;}"
+                                     Header="使用说明"
+                                     Description="接口用法速览。">
+                <StackPanel Spacing="8" Margin="0,4,0,8">
+                    <TextBlock TextWrapping="Wrap"
+                               Text="提醒接口：POST /api/notify，格式与原版一致（README.md里）"/>
+                    <TextBlock TextWrapping="Wrap"
+                               Text="文本组件：先在主界面添加「HTTP 文本」组件并设置组件 ID，然后 POST http://&lt;监听地址&gt;:&lt;端口&gt;/&lt;组件ID&gt;，请求体即为要显示的文本（与 PutIsland 用法一致）。"/>
+                    <TextBlock TextWrapping="Wrap"
+                               Text="示例：curl -X POST http://localhost:1379/my-text -d &quot;Hello NotifyIsland&quot;"/>
+                </StackPanel>
+            </fluent:SettingsExpander>
+
+        </StackPanel>
+    </ScrollViewer>
+</ci:SettingsPageBase>
