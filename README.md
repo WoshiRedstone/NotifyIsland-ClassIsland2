@@ -1,12 +1,13 @@
-# NotifyIsland
+# NotifyIsland（重构）
+- 源项目[NotifyIsland](https://github.com/DeepslateQAQ/NotifyIsland)
 
-用于将ClassIsland的提醒功能更好的和第三方通知服务集成。
+用于将ClassIsland的提醒功能更好的和第三方通知服务集成,以及PutIsland同款网络文本。
 
-适用于 ClassIsland **2.0+**（Avalonia 版）。
+适用于 ClassIsland **2.0+**
 
 ## 使用方式
 
-安装此插件，重启后打开 **调试菜单**（为避免同学乱调，故放于调试菜单中），在设置中调整需要修改的内容，将 **【启用 NotifyIsland 服务】开关** 打开即可。
+安装此插件，在设置中调整需要修改的内容，将 **【启用 NotifyIsland 服务】开关** 打开即可。
 
 **开启服务并调试完毕后，务必在展开的菜单中设置访问密钥！！！**
 
@@ -43,19 +44,6 @@ Content-Type: application/json
 
 {"Success":true,"Code":200,"Status":200,"Message":"[200]已推送到ClassIsland"}
 ```
-
-字段说明：
-
-| 字段 | 类型 | 说明 |
-| --- | --- | --- |
-| `title` | string | 遮罩显示的标题，可空 |
-| `title_duration` | number | 标题显示秒数，缺省 3 |
-| `title_voice` | string | 标题语音内容，缺省使用 `title` |
-| `content` | string | 弹出正文，可空（为空则不弹出正文） |
-| `content_duration` | number | 正文显示秒数，缺省 5 |
-| `content_voice` | string | 正文语音内容，缺省使用 `content` |
-| `sound_enabled` | bool | 是否播放提示音，缺省 false |
-| `effect_enabled` | bool | 是否播放提醒特效，缺省 true |
 
 ### 错误码
 
@@ -115,14 +103,16 @@ Content-Type: application/json
 - 建议仅监听 `localhost`，只允许本机软件调用。
 - 提醒接口始终支持 Bearer 密钥校验；文本接口默认不校验（保持 PutIsland 用法），如需校验请在设置中打开「文本接口也要求密钥」。
 
-## 开发
 
-- 目标框架：`net8.0`，插件 SDK：`ClassIsland.PluginSdk 2.0.4`（apiVersion 2.0.0.0）
-- UI 使用 Avalonia + FluentAvalonia
-- `Properties/launchSettings.json` 中的调试路径请改成你本机的 ClassIsland 可执行文件位置
+## 许可证
+[GNU General Public License v3.0](https://www.gnu.org/licenses/gpl-3.0.en.html)
+<img width="127" height="51" alt="image" src="https://github.com/user-attachments/assets/f3f78e8e-4940-494e-9430-871a7a2cbd64" />
 
-## TODO
+## 特别鸣谢
+[Deepseek](https://deepseek.com)
 
-- 多通道推送
+[GLM](https://open.bigmodel.cn/)
 
-  用于区分不同等级的提醒（紧急、重要、普通等）
+[PutIsland](https://github.com/pizeroLOL/PutIsland)
+
+
