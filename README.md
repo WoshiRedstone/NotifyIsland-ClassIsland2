@@ -1,6 +1,8 @@
 # NotifyIsland（重构）
 - 源项目[NotifyIsland](https://github.com/DeepslateQAQ/NotifyIsland)
 
+- 由于代码复杂度原因，该项目的命名空间保持原项目
+
 用于将ClassIsland的提醒功能更好的和第三方通知服务集成,以及PutIsland同款网络文本。
 
 适用于 ClassIsland **2.0+**
