@@ -5,7 +5,12 @@ using System.Text.Json.Serialization;
 namespace cn.lixiaotuan.notifyisland.Services;
 
 /// <summary>
-/// /api/notify 接口的请求载荷，字段与 NotifyIsland 1.x 保持一致。
+/// /api/notify 接口的请求载荷。
+/// <para>
+/// 基础字段与 NotifyIsland 1.x 保持一致；<see cref="Type"/>、<see cref="Rolling"/>、
+/// <see cref="Target"/>、<see cref="RepeatCount"/>、<see cref="RollingDuration"/> 为 2.0 新增的
+/// 提醒类型控制字段，省略时行为与 1.x 完全相同（基本通知）。
+/// </para>
 /// </summary>
 public sealed class NotificationPayload
 {
@@ -32,6 +37,40 @@ public sealed class NotificationPayload
 
     [JsonPropertyName("effect_enabled")]
     public bool? EffectEnabled { get; set; }
+
+    /// <summary>
+    /// 提醒类型：<c>basic</c>（基本通知，默认，正文使用「简单文本」模板）或
+    /// <c>rolling</c>（滚动通知，正文使用「滚动文本」模板）。
+    /// </summary>
+    [JsonPropertyName("type")]
+    public string? Type { get; set; }
+
+    /// <summary>
+    /// <see cref="Type"/> 的布尔简写：为 <c>true</c> 时使用滚动通知。
+    /// 两个字段同时给出时以 <see cref="Type"/> 为准。
+    /// </summary>
+    [JsonPropertyName("rolling")]
+    public bool? Rolling { get; set; }
+
+    /// <summary>
+    /// 滚动文本所作用的部分：<c>content</c>（正文，默认）、<c>mask</c>（遮罩）或 <c>both</c>（两者）。
+    /// 仅在滚动通知时生效。
+    /// </summary>
+    [JsonPropertyName("target")]
+    public string? Target { get; set; }
+
+    /// <summary>
+    /// 滚动文本的重复次数，省略时为 2，必须大于 0。
+    /// </summary>
+    [JsonPropertyName("repeat_count")]
+    public int? RepeatCount { get; set; }
+
+    /// <summary>
+    /// 滚动提醒的显示时长（秒）。省略时正文使用 <see cref="ContentDuration"/>、遮罩使用
+    /// <see cref="TitleDuration"/>；两者都未提供时使用 <c>ApiNotificationProvider.DefaultRollingDuration</c>。
+    /// </summary>
+    [JsonPropertyName("rolling_duration")]
+    public double? RollingDuration { get; set; }
 }
 
 /// <summary>
