@@ -29,16 +29,32 @@ Authorization: Bearer 1145141919
 Content-Type: application/json
 
 {
-    "title": "提醒标题",
-    "title_duration": 3,
-    "title_voice": "这是语音播放的提醒标题",
-    "content": "提醒内容",
-    "content_duration": 15,
-    "content_voice": "这是语音播放的提醒内容：哼哼哼啊啊啊啊啊",
-    "effect_enabled": true,
-    "sound_enabled": true
+    "title": "提醒标题",                               #提醒标题（必须）
+    "title_duration": 3,                              #标题持续时间（必须）
+    "title_voice": "这是语音播放的提醒标题",            #tts播放的标题（留空不出声音）
+    "content": "提醒内容",                             #提醒内容（可留空）
+    "content_duration": 15,                            #提醒持续时间（留空不展示内容）
+    "content_voice": "这是语音播放的提醒内容",           #tts播放的内容（留空不出声音）
+    "effect_enabled": true,                            #是否启用强调特效
+    "sound_enabled": true                            #是否启用提醒音效
 }
 ```
+
+
+
+你可以使用以下字段修改通知
+| 字段 | 类型 | 默认值 | 说明 |
+| --- | --- | --- | --- |
+| `type` | string | `basic` | 提醒类型。`basic` 基本通知 / `rolling` 滚动通知；也接受 `simple`、`normal`、`default`、`static`、`基本`、`普通`、`简单` 与 `roll`、`scroll`、`scrolling`、`marquee`、`滚动` 等写法（不区分大小写） |
+| `rolling` | bool | - | `type` 的布尔简写，`true` 等价于 `type: "rolling"`；两个字段同时给出时以 `type` 为准 |
+| `target` | string | `content` | 使用滚动文本的部分：`content` 正文（默认）、`mask` 遮罩（遮罩改为滚动显示标题，正文仍是简单文本）、`both` 两者都用滚动文本 |
+| `repeat_count` | int | `2` | 滚动文本的重复次数，必须大于 0 |
+| `rolling_duration` | number | 见下 | 滚动提醒的显示时长（秒）。省略时正文取 `content_duration`、遮罩取 `title_duration`；两者都未提供时默认 **20 秒**（ClassIsland「滚动文本」模板的默认时长） |
+
+
+
+
+
 
 ```
 HTTP/1.1 200 OK
