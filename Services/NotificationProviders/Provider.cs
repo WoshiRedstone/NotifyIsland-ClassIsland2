@@ -29,6 +29,11 @@ public class ApiNotificationProvider : NotificationProviderBase
     /// </summary>
     public static double DefaultContentDuration { get; set; } = 5;
 
+    /// <summary>
+    /// 滚动提醒未显式指定时长（rolling_duration / title_duration / content_duration）时的默认显示时长（秒）。
+    /// </summary>
+    public static double DefaultRollingDuration { get; set; } = NotificationStyle.DefaultRollingDurationSeconds;
+
     public ApiNotificationProvider(Plugin plugin, PluginHttpServer server,
         ILogger<ApiNotificationProvider>? logger = null)
     {
@@ -59,6 +64,11 @@ public class ApiNotificationProvider : NotificationProviderBase
 
     /// <summary>
     /// 将 HTTP 载荷转换为 ClassIsland 提醒请求。
+    /// <para>
+    /// 正文使用哪种提醒内容模板由载荷中的 <c>type</c>（或布尔简写 <c>rolling</c>）字段决定：
+    /// <c>basic</c> 使用「简单文本」模板，<c>rolling</c> 使用「滚动文本」模板；
+    /// 省略该字段时按 <c>basic</c> 处理，与 NotifyIsland 1.x 行为一致。
+    /// </para>
     /// </summary>
     public static NotificationRequest BuildRequest(NotificationPayload payload)
     {
@@ -69,16 +79,50 @@ public class ApiNotificationProvider : NotificationProviderBase
         var titleSpeech = string.IsNullOrWhiteSpace(payload.TitleVoice) ? title : payload.TitleVoice!;
         var contentSpeech = string.IsNullOrWhiteSpace(payload.ContentVoice) ? content : payload.ContentVoice!;
 
+        // 提醒类型相关字段由 HTTP 接口提前校验，这里解析失败时退回默认值，保证任何情况下都不会抛异常。
+        if (!payload.TryResolveDisplayType(out var displayType, out _))
+        {
+            displayType = NotificationDisplayType.Basic;
+        }
+
+        if (!payload.TryResolveRollingTarget(out var target, out _))
+        {
+            target = RollingTextTarget.Content;
+        }
+
+        var rolling = displayType == NotificationDisplayType.Rolling;
+        var rollingMask = rolling && (target is RollingTextTarget.Mask or RollingTextTarget.Both);
+        var rollingContent = rolling && (target is RollingTextTarget.Content or RollingTextTarget.Both);
+
         var request = new NotificationRequest
         {
-            MaskContent = NotificationContent.CreateTwoIconsMask(title, rightIcon: "lucide(\ue378)", factory: c =>
-            {
-                c.Duration = titleDuration;
-                c.SpeechContent = titleSpeech;
-            })
+            MaskContent = rollingMask
+                ? BuildRollingTextContent(payload, title, titleSpeech, payload.TitleDuration ?? DefaultRollingDuration)
+                : NotificationContent.CreateTwoIconsMask(title, rightIcon: "lucide(\ue378)", factory: c =>
+                {
+                    c.Duration = titleDuration;
+                    c.SpeechContent = titleSpeech;
+                })
         };
 
-        if (!string.IsNullOrEmpty(content))
+        // 滚动通知未提供正文时改为滚动显示标题，避免出现空白的滚动条。
+        var rollingText = content;
+        var rollingTextSpeech = contentSpeech;
+        if (rollingContent && string.IsNullOrEmpty(content))
+        {
+            rollingText = title;
+            rollingTextSpeech = titleSpeech;
+        }
+
+        if (rollingContent)
+        {
+            if (!string.IsNullOrEmpty(rollingText))
+            {
+                request.OverlayContent = BuildRollingTextContent(payload, rollingText, rollingTextSpeech,
+                    payload.ContentDuration ?? DefaultRollingDuration);
+            }
+        }
+        else if (!string.IsNullOrEmpty(content))
         {
             request.OverlayContent = NotificationContent.CreateSimpleTextContent(content, c =>
             {
@@ -94,5 +138,33 @@ public class ApiNotificationProvider : NotificationProviderBase
             IsNotificationEffectEnabled = payload.EffectEnabled ?? true
         };
         return request;
+    }
+
+    /// <summary>
+    /// 构建滚动文本提醒内容（ClassIsland 的「滚动文本」提醒内容模板）。
+    /// </summary>
+    /// <param name="payload">HTTP 载荷，用于读取 repeat_count / rolling_duration。</param>
+    /// <param name="text">滚动显示的文本。</param>
+    /// <param name="speech">语音播报内容。</param>
+    /// <param name="fallbackDurationSeconds">未提供 rolling_duration 时使用的显示时长（秒）。</param>
+    private static NotificationContent BuildRollingTextContent(NotificationPayload payload, string text,
+        string speech, double fallbackDurationSeconds)
+    {
+        if (!payload.TryResolveRepeatCount(out var repeatCount, out _))
+        {
+            repeatCount = NotificationStyle.DefaultRepeatCount;
+        }
+
+        var fallback = TimeSpan.FromSeconds(fallbackDurationSeconds);
+        if (!payload.TryResolveRollingDuration(fallback, out var duration, out _))
+        {
+            duration = fallback;
+        }
+
+        return NotificationContent.CreateRollingTextContent(text, duration, repeatCount, c =>
+        {
+            c.Duration = duration;
+            c.SpeechContent = speech;
+        });
     }
 }
